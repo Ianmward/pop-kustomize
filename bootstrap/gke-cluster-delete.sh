@@ -8,10 +8,10 @@ fi
 gcloud config set project $PROJECT_ID
 # Test cluster
 echo "Deleting testcluster..."
-gcloud container clusters delete testcluster --region "us-central1" --async
+gcloud container clusters delete testcluster --region "australia-southeast1" --async
 # Staging cluster
 echo "Deleting stagingcluster..."
-gcloud container clusters delete stagingcluster --region "us-central1" --async
+gcloud container clusters delete stagingcluster --region "australia-southeast1" --async
 # Prod cluster
-echo "Deleting prodcluster..."
-gcloud container clusters delete prodcluster --region "us-central1" --async
+#echo "Deleting prodcluster..."
+#gcloud container clusters delete prodcluster --region "australia-southeast1" --async
