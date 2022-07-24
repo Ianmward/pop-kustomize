@@ -40,4 +40,4 @@ metadata:
 description: prod cluster
 requireApproval: true
 gke:
-  cluster: projects/testproject1-344106/locations/australia-southeast1/clusters/aws-cluster-po
+  cluster: projects/testproject1-344106/locations/australia-southeast1/awsClusters/aws-cluster-po
