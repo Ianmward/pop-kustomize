@@ -1,34 +1,17 @@
-# multi-stage build
-FROM python:3.10-slim as build
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends \
-build-essential gcc 
-
-# install dependencies in a venv
-WORKDIR /usr/app
-RUN python -m venv /usr/app/venv
-ENV PATH="/usr/app/venv/bin:$PATH"
-
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-# run image
-FROM python:3.10-slim
-
-# add nonroot group/user
-RUN groupadd -g 999 nonroot && \
-    useradd -r -u 999 -g nonroot nonroot
-# mkdir the workdir with nonroot ownership
-RUN mkdir /usr/app && chown nonroot:nonroot /usr/app
-WORKDIR /usr/app
-# copy in venv fromb build and app source files
-COPY --chown=nonroot:nonroot --from=build /usr/app/venv ./venv
-COPY --chown=nonroot:nonroot . .
-# run container as nonroot user
-USER 999
-# add venv to the path
-ENV PATH="/usr/app/venv/bin:$PATH"
-ENV PORT 8080
-ENV GUNICORN_CMD_ARGS="--workers 2 --threads 2 -b 0.0.0.0:8080 --chdir /usr/app"
+# Use the official lightweight Node.js 12 image.
+# https://hub.docker.com/_/node
+FROM node:12-slim
+# Create and change to the app directory.
+WORKDIR /usr/src/app
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure copying both package.json AND package-lock.json (when available).
+# Copying this first prevents re-running npm install on every code change.
+COPY package*.json ./
+# Install production dependencies.
+# If you add a package-lock.json, speed your build by switching to 'npm ci'.
+# RUN npm ci --only=production
+RUN npm install --only=production
+# Copy local code to the container image.
+COPY . ./
 # Run the web service on container startup.
-CMD ["gunicorn",  "app:app"]
+CMD [ "npm", "start" ]
